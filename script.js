@@ -20,4 +20,40 @@ $(function () {
   // attribute of each time-block be used to do this?
   //
   // TODO: Add code to display the current date in the header of the page.
+  let htmlCode = ""
+  let currentHour = dayjs().hour()
+  for(let i=9;i<=17;i++){
+    var plannedEntry = localStorage.getItem(i) || ""
+    var currentTime;
+    if(i < 12){
+      currentTime = i+"am"
+    }else if( i === 12){
+      currentTime = i +"pm"
+    }else{
+      currentTime = i-12 + "pm"
+    }
+    let currentColor;
+    if(i < currentHour){
+    currentColor = "past"
+    }else if(i === currentHour){
+      currentColor = "present"
+    }else{
+      currentColor = "future"
+    }
+    htmlCode += `   <div id="hour-${i}" class="row time-block">
+    <div class="col-2 col-md-1 hour text-center py-3"> ${currentTime}</div>
+    <textarea value="${plannedEntry}" class="col-8 col-md-10 description ${currentColor}" id="${i}-text" rows="3">${plannedEntry} </textarea>
+    <button class="btn saveBtn col-2 col-md-1"id="${i}-save" data-id = "${i}" aria-label="save">
+      <i class="fas fa-save" aria-hidden="true"></i>
+    </button>
+  </div>`
+  }
+  $(".container-lg").html(htmlCode)
+  
+  $(".saveBtn").on ("click",function(){
+    let id = $(this).attr("data-id")
+    let userEntry = $("#"+id +"-text").val()
+    console.log(id,userEntry,"On click")
+    localStorage.setItem (id,userEntry)
+  })
 });
